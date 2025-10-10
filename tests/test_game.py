@@ -89,7 +89,7 @@ def test_reset_keeps_names_by_default_and_clears_scores():
     assert g.players[1].name == "Bob"
     assert g.players[0].score == 0
     assert g.players[1].score == 0
-    assert g.current.name == "Player 1"  # turn reset
+    assert g.current.name == "Alice"  # turn reset
 
 def test_hold_with_zero_turn_points_switches_without_score_change():
     g = Game()
