@@ -26,6 +26,15 @@
         "Player 1": 61,
         "Computer": 105
       }
+    },
+    {
+      "when": "2025-10-22T18:24:11",
+      "target": 100,
+      "winner": "Computer",
+      "scores": {
+        "Player 1": 76,
+        "Computer": 104
+      }
     }
   ]
 }
