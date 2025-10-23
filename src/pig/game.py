@@ -14,6 +14,14 @@ class Game:
     current_index: int = 0
     turn_points: int = 0
     winner_id: str | None = None
+    # not passed in by callers; created on init/reset/switch
+    turn: Turn | None = field(default=None, init=False)
+
+    def __post_init__(self) -> None:
+        # start with Player 1
+        self.turn = Turn(self.current, self.dice)
+
+    # --- convenience bits the UI can use ---
 
     @property
     def current(self) -> Player:
