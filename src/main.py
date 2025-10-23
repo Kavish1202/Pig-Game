@@ -13,4 +13,4 @@ def main() -> None:
     shell.cmdloop()
 
 if __name__ == "__main__":
-    PigShell().cmdloop()
+    main()

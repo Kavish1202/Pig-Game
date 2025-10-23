@@ -1,21 +1,56 @@
+import pytest
+
 from pig.game import Game
+from pig.turn import Turn
+from pig.player import Player
 
 
-def test_game_starts_with_player1_and_zero_turn_points():
+# ---------- helpers ----------
+
+class OneDice:
+    def roll(self): return 1
+
+class ConstDice:
+    def __init__(self, v): self.v = v
+    def roll(self): return self.v
+
+class SeqDice:
+    def __init__(self, seq): self.seq = list(seq)
+    def roll(self): return self.seq.pop(0)
+
+class AlwaysRoll:
+    def decide(self, game: Game) -> str:
+        return "roll"
+
+class RollOnceThenHold:
+    def __init__(self): self.n = 0
+    def decide(self, game: Game) -> str:
+        self.n += 1
+        return "roll" if self.n == 1 else "hold"
+
+class AlwaysHold:
+    def decide(self, game: Game) -> str:
+        return "hold"
+
+
+# ---------- tests ----------
+
+def test_init_sets_turn_for_player1_and_defaults():
     g = Game()
+    assert isinstance(g.turn, Turn)
     assert g.current.name == "Player 1"
+    assert g.opponent.name == "Player 2"
+    assert g.turn.player is g.current
     assert g.turn_points == 0
     assert g.winner_id is None
+    # turn shares the game's dice by default
+    assert g.turn.dice is g.dice
 
 
-def test_roll_accumulates_until_one_then_switches():
+def test_roll_accumulates_then_busts_and_switches():
     g = Game()
-    # monkeypatch by swapping dice with deterministic values via a stub
-    class StubDice:
-        seq = [3, 4, 1]  # accumulate 3+4, then bust on 1
-        def roll(self):
-            return self.seq.pop(0)
-    g.dice = StubDice()  # type: ignore[assignment]
+    g.dice = SeqDice([3, 4, 1])   # +3, +4, then bust
+    g.turn.dice = g.dice
 
     assert g.roll() == 3
     assert g.turn_points == 3
@@ -25,68 +60,163 @@ def test_roll_accumulates_until_one_then_switches():
     assert g.turn_points == 7
     assert g.current.name == "Player 1"
 
-    # bust: turn_points reset and turn switches
+    # bust switches to Player 2 and clears turn points
     assert g.roll() == 1
     assert g.turn_points == 0
     assert g.current.name == "Player 2"
+    # new Turn created for the new current player
+    assert isinstance(g.turn, Turn)
+    assert g.turn.player is g.current
 
 
-def test_hold_banks_points_and_switches_turn():
+def test_hold_banks_points_and_switches_when_no_win():
     g = Game()
-    class StubDice:
-        def roll(self): return 5
-    g.dice = StubDice()  # type: ignore[assignment]
+    g.dice = ConstDice(5)
+    g.turn.dice = g.dice
 
-    g.roll(); g.roll()   # +5 +5 = 10 turn points
+    g.roll(); g.roll()   # 10
     g.hold()
     assert g.players[0].score == 10
     assert g.turn_points == 0
     assert g.current.name == "Player 2"
 
 
-def test_reaching_target_sets_winner_and_stops_changes():
-    g = Game(target=15)
-    class StubDice:
-        def __init__(self): self.n = 0
-        def roll(self):
-            self.n += 1
-            return 6  # always 6
-    g.dice = StubDice()  # type: ignore[assignment]
+def test_reaching_target_sets_winner_and_blocks_future_actions():
+    g = Game(target=12)
+    g.dice = ConstDice(6)
+    g.turn.dice = g.dice
 
-    # P1 rolls 6,6 → 12; holds → score=12
+    # P1: 6+6=12 -> hold = win
     g.roll(); g.roll(); g.hold()
-    assert g.players[0].score == 12
-    assert g.winner_id is None
+    assert g.is_over
+    assert g.get_winner() is g.players[0]
 
-    # P2 rolls once (6), holds → score=6
-    g.roll(); g.hold()
-    assert g.players[1].score == 6
-    assert g.winner_id is None
-
-    # P1 rolls once (6), holds → 12+6=18 >= 15 → winner
-    g.roll(); g.hold()
-    assert g.winner_id == g.players[0].player_id
-
-    # further actions do nothing harmful
-    before_scores = (g.players[0].score, g.players[1].score)
-    g.roll(); g.hold()
-    after_scores = (g.players[0].score, g.players[1].score)
-    assert before_scores == after_scores
+    # further rolls are ignored
+    before = (g.current_index, g.players[0].score, g.players[1].score, g.turn_points)
+    assert g.roll() == 0
+    g.hold()
+    after = (g.current_index, g.players[0].score, g.players[1].score, g.turn_points)
+    assert before == after
 
 
-def test_reset_keeps_names_by_default_and_clears_scores():
+def test_reset_keep_names_true_and_false():
     g = Game()
-    g.players[0].name = "Alice"
-    g.players[1].name = "Bob"
-    # simulate some state
-    class StubDice: 
-        def roll(self): return 6
-    g.dice = StubDice()  # type: ignore[assignment]
-    g.roll(); g.hold()   # Alice banks 6
+    g.players[0].change_name("Alice")
+    g.players[1].change_name("Bob")
 
-    g.reset()  # keep_names=True default
-    assert g.players[0].name == "Alice"
-    assert g.players[1].name == "Bob"
-    assert g.players[0].score == 0
-    assert g.players[1].score == 0
-    assert g.current.name == "Player 1"  # turn reset
+    # give Alice some points
+    g.dice = ConstDice(6); g.turn.dice = g.dice
+    g.roll(); g.hold()
+    assert g.players[0].score == 6
+
+    g.reset(keep_names=True)
+    assert [p.name for p in g.players] == ["Alice", "Bob"]
+    assert g.players[0].score == 0 and g.players[1].score == 0
+    assert g.current.name == "Alice"
+    assert isinstance(g.turn, Turn) and g.turn.player is g.current
+
+    g.reset(keep_names=False)
+    assert [p.name for p in g.players] == ["Player 1", "Player 2"]
+    assert g.current.name == "Player 1"
+
+
+def test_set_target_validation_and_assignment():
+    g = Game()
+    with pytest.raises(TypeError):
+        g.set_target("100")  # type: ignore[arg-type]
+    with pytest.raises(ValueError):
+        g.set_target(0)
+    g.set_target(25)
+    assert g.target == 25
+
+
+def test_rename_validation_and_effect():
+    g = Game()
+    with pytest.raises(ValueError):
+        g.rename(3, "X")
+    g.rename(1, "Alice")
+    g.rename(2, "Bob")
+    assert [p.name for p in g.players] == ["Alice", "Bob"]
+
+
+def test_snapshot_contains_expected_fields_and_values():
+    g = Game(target=15)
+    g.players[0].change_name("Alice")
+    g.players[1].change_name("Bob")
+    g.dice = ConstDice(5); g.turn.dice = g.dice
+    g.roll(); g.roll()  # 10
+    snap = g.snapshot()
+    assert set(snap.keys()) == {"target", "current", "turn_points", "scores", "winner"}
+    assert snap["target"] == 15
+    assert snap["current"] == "Alice"
+    assert snap["turn_points"] == 10
+    assert snap["scores"]["Alice"] == 0  # not banked yet
+    assert snap["winner"] is None
+
+
+def test_is_over_and_get_winner_progression():
+    g = Game(target=6)
+    assert not g.is_over and g.get_winner() is None
+    g.dice = ConstDice(6); g.turn.dice = g.dice
+    g.roll(); g.hold()
+    assert g.is_over
+    assert g.get_winner() == g.players[0]
+
+
+def test_turn_uses_games_dice_instance_when_replaced():
+    g = Game()
+    d = ConstDice(2)
+    g.dice = d
+    g.turn.dice = g.dice
+    g.roll(); g.roll()
+    assert g.turn_points == 4
+
+
+def test_play_cpu_turn_rolls_until_bust():
+    g = Game()
+    # make it Player 2's turn
+    g.current_index = 1
+    g.turn = Turn(g.current, g.dice)
+
+    g.dice = OneDice()         # first roll => bust
+    g.turn.dice = g.dice
+
+    result = g.play_cpu_turn(AlwaysRoll().decide)
+    assert result["ended"] == "bust"
+    assert result["actions"][0] == {"action": "roll", "value": 1}
+    # turn should now belong to Player 1
+    assert g.current is g.players[0]
+
+
+def test_play_cpu_turn_roll_then_hold_and_report_next_player():
+    g = Game()
+    # Player 2 to move
+    g.current_index = 1
+    g.turn = Turn(g.current, g.dice)
+
+    g.dice = ConstDice(4)
+    g.turn.dice = g.dice
+
+    result = g.play_cpu_turn(RollOnceThenHold().decide)
+    # Should have one roll and one hold action
+    assert [a["action"] for a in result["actions"]] == ["roll", "hold"]
+    assert result["ended"] == "hold"
+    # After CPU's hold, turn should switch to Player 1
+    assert g.current is g.players[0]
+    assert result["next"] == g.current.name
+
+
+def test_play_cpu_turn_can_win_and_returns_win_result():
+    g = Game(target=10)
+    # ensure Player 1 is to play and wins by holding
+    g.current_index = 0
+    g.turn = Turn(g.current, g.dice)
+    # give current turn some points so holding wins now
+    g.turn.points = 10
+    g.turn.finished = False
+    g.turn.busted = False
+
+    result = g.play_cpu_turn(AlwaysHold().decide)
+    assert result["ended"] == "win"
+    assert g.is_over
+    assert g.get_winner() is g.players[0]

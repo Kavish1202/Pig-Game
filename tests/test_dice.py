@@ -23,7 +23,7 @@
 
 import random
 import pytest
-from src.pig.dice import Dice
+from pig.dice import Dice
 
 
 def test_default_init_sets_six_sides():
