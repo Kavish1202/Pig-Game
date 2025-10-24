@@ -374,7 +374,14 @@ Won’t do anything if the game isn’t over yet.</p>
 <dt class="sig sig-object py" id="pig.shell.PigShell">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pig.shell.</span></span><span class="sig-name descname"><span class="pre">PigShell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pig.game.Game" title="pig.game.Game"><span class="pre">Game</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pig.scoreboard.Scoreboard" title="pig.scoreboard.Scoreboard"><span class="pre">Scoreboard</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pig/shell.html#PigShell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pig.shell.PigShell" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Cmd</span></code></p>
-<p>Command-line shell for playing Pig.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pig.shell.PigShell.default">
+<span class="sig-name descname"><span class="pre">default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/pig/shell.html#PigShell.default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pig.shell.PigShell.default" title="Link to this definition">¶</a></dt>
+<dd><p>Called on an input line when the command prefix is not recognized.</p>
+<p>If this method is not overridden, it prints an error message and
+returns.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="pig.shell.PigShell.do_EOF">
 <span class="sig-name descname"><span class="pre">do_EOF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pig/shell.html#PigShell.do_EOF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pig.shell.PigShell.do_EOF" title="Link to this definition">¶</a></dt>
@@ -384,7 +391,7 @@ Won’t do anything if the game isn’t over yet.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pig.shell.PigShell.do_diff">
 <span class="sig-name descname"><span class="pre">do_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pig/shell.html#PigShell.do_diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pig.shell.PigShell.do_diff" title="Link to this definition">¶</a></dt>
-<dd><p>Diff &lt;easy|normal|hard&gt;: Set computer difficulty (PvC only).</p>
+<dd><p>diff &lt;easy|normal|hard&gt;: Set computer difficulty (PvC only).</p>
 </dd></dl>
 
 <dl class="py method">
@@ -396,13 +403,13 @@ Won’t do anything if the game isn’t over yet.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pig.shell.PigShell.do_mode">
 <span class="sig-name descname"><span class="pre">do_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pig/shell.html#PigShell.do_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pig.shell.PigShell.do_mode" title="Link to this definition">¶</a></dt>
-<dd><p>Mode &lt;pvp|pvc&gt;: Switch between two humans or vs computer.</p>
+<dd><p>mode &lt;pvp|pvc&gt;: Switch between two humans or vs computer.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pig.shell.PigShell.do_name">
 <span class="sig-name descname"><span class="pre">do_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pig/shell.html#PigShell.do_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pig.shell.PigShell.do_name" title="Link to this definition">¶</a></dt>
-<dd><p>Name &lt;1|2&gt; &lt;new name&gt;: Rename a player.</p>
+<dd><p>name &lt;1|2&gt; &lt;new name&gt;: Rename a player.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -414,7 +421,7 @@ Won’t do anything if the game isn’t over yet.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pig.shell.PigShell.do_reset">
 <span class="sig-name descname"><span class="pre">do_reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pig/shell.html#PigShell.do_reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pig.shell.PigShell.do_reset" title="Link to this definition">¶</a></dt>
-<dd><p>Reset [keep|clear]: Reset the game. Keep names by default.</p>
+<dd><p>reset [keep|clear]: Reset the game. Keep names by default.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -438,7 +445,7 @@ Won’t do anything if the game isn’t over yet.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pig.shell.PigShell.do_target">
 <span class="sig-name descname"><span class="pre">do_target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pig/shell.html#PigShell.do_target"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pig.shell.PigShell.do_target" title="Link to this definition">¶</a></dt>
-<dd><p>Target &lt;points&gt;: Set new target score (&gt;= 1).</p>
+<dd><p>target &lt;points&gt;: Set new target score (&gt;= 1).</p>
 </dd></dl>
 
 <dl class="py method">
@@ -455,13 +462,13 @@ Won’t do anything if the game isn’t over yet.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pig.shell.PigShell.postcmd">
 <span class="sig-name descname"><span class="pre">postcmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/pig/shell.html#PigShell.postcmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pig.shell.PigShell.postcmd" title="Link to this definition">¶</a></dt>
-<dd><p>Run after each command to handle win checks and CPU turns.</p>
+<dd><p>Hook method executed just after a command dispatch is finished.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pig.shell.PigShell.preloop">
 <span class="sig-name descname"><span class="pre">preloop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pig/shell.html#PigShell.preloop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pig.shell.PigShell.preloop" title="Link to this definition">¶</a></dt>
-<dd><p>Set mode and print header before the command loop starts.</p>
+<dd><p>Hook method executed once when the cmdloop() method is called.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -474,14 +481,12 @@ Won’t do anything if the game isn’t over yet.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pig.shell.load_scoreboard">
 <span class="sig-prename descclassname"><span class="pre">pig.shell.</span></span><span class="sig-name descname"><span class="pre">load_scoreboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pig.scoreboard.Scoreboard" title="pig.scoreboard.Scoreboard"><span class="pre">Scoreboard</span></a></span></span><a class="reference internal" href="_modules/pig/shell.html#load_scoreboard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pig.shell.load_scoreboard" title="Link to this definition">¶</a></dt>
-<dd><p>Load scoreboard.</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pig.shell.save_scoreboard">
 <span class="sig-prename descclassname"><span class="pre">pig.shell.</span></span><span class="sig-name descname"><span class="pre">save_scoreboard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pig.scoreboard.Scoreboard" title="pig.scoreboard.Scoreboard"><span class="pre">Scoreboard</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pig/shell.html#save_scoreboard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pig.shell.save_scoreboard" title="Link to this definition">¶</a></dt>
-<dd><p>Save the scoreboard to disk.</p>
-</dd></dl>
+<dd></dd></dl>
 
 </section>
 <section id="module-pig.turn">
