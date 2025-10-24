@@ -2,16 +2,39 @@
 
 A Pig Game implementation in Python, developed using Object-Oriented Programming principles with comprehensive unit testing.
 
-### Playing the Game
+## Playing the Game
 1- Go to Pig-game/src directory
 2- In cmd 
 ```bash
 python main.py
 ```
+## Using Makefile
+go to PS with admin
+
+```bash
+choco install make
+```
+### Test Report
+```bash
+make test
+```
+### Coverage Report
+```bash
+make coverage
+```
+### Api Docs
+```bash
+make doc
+```
+### UML Diagrams
+```bash
+make uml
+```
 
 ## Running Tests and Coverage Report
 
 This section provides instructions for running the test suite and generating a test coverage report for the Pig Game project on Windows.
+
 
 ### Prerequisites
 
@@ -49,7 +72,7 @@ To open the coverage report in your default browser:
 Invoke-Item htmlcov/index.html
 ```
 
-### Prerequisites for Documentation Generation
+## Prerequisites for Documentation Generation
 In addition to the project dependencies, install Sphinx:
 
 ```bash
