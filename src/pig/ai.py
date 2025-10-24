@@ -1,16 +1,31 @@
 """Computer strategies for Pig."""
 
 from __future__ import annotations
-from pig.game import Game
+
+from .game import Game
 
 
 class ComputerStrategy:
     """Simple threshold bot. Easy mode."""
 
     def __init__(self, base_threshold: int = 20) -> None:
+        """Initialize the computer strategy with a base threshold.
+
+        Args:
+            base_threshold (int): The base points threshold for holding.
+                Defaults to 20.
+        """
         self.base_threshold = base_threshold
 
     def decide(self, game: Game) -> str:
+        """Determine whether to roll or hold based on the current game state.
+
+        Args:
+            game (Game): The current game state.
+
+        Returns:
+            str: Either "roll" or "hold" as the decision.
+        """
         me = game.current
         opp = game.opponent
         t = game.turn_points
@@ -35,11 +50,31 @@ class ComputerStrategy:
 class SmartStrategy:
     """Stronger bot. Adjusts to game state and endgame."""
 
-    def __init__(self, min_threshold: int = 12, max_threshold: int = 28) -> None:
+    def __init__(
+        self, min_threshold: int = 12, max_threshold: int = 28
+    ) -> None:
+        """Initialize the smart strategy with minimum and maximum thresholds.
+
+        Args:
+            min_threshold (int): The minimum points threshold for holding.
+                Defaults to 12.
+            max_threshold (int): The maximum points threshold for holding.
+                Defaults to 28.
+        """
         self.min_threshold = min_threshold
         self.max_threshold = max_threshold
 
     def decide(self, game: Game) -> str:
+        """Determine whether to roll or hold based on advanced game state.
+
+        Analysis based on the current game state and various strategic factors.
+
+        Args:
+            game (Game): The current game state.
+
+        Returns:
+            str: Either "roll" or "hold" as the decision.
+        """
         me = game.current
         opp = game.opponent
         t = game.turn_points

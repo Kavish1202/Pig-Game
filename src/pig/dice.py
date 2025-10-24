@@ -2,6 +2,7 @@
 from __future__ import annotations
 import random
 
+
 class Dice:
     """A standard six-sided dice."""
 

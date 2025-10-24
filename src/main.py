@@ -8,9 +8,12 @@
 from pig.shell import PigShell, load_scoreboard
 from pig.game import Game
 
+
 def main() -> None:
+    """Run the Pig game shell."""
     shell = PigShell(Game(), load_scoreboard())
     shell.cmdloop()
+
 
 if __name__ == "__main__":
     main()

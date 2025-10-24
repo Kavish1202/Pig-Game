@@ -6,6 +6,7 @@ from pig.dice import Dice
 
 
 def test_roll_accumulates_points_on_non_one():
+    """Dice roll points accumation."""
     p = Player("Alice")
 
     class StubDice:
@@ -22,6 +23,7 @@ def test_roll_accumulates_points_on_non_one():
 
 
 def test_roll_of_one_busts_and_finishes_turn():
+    """Roll of one bust and finish."""
     p = Player("Bob")
 
     class StubDice:
@@ -35,6 +37,7 @@ def test_roll_of_one_busts_and_finishes_turn():
 
 
 def test_cannot_roll_after_finished_returns_zero_and_no_change():
+    """Cannot roll after finsish."""
     p = Player("Cara")
 
     class StubDice:
@@ -50,6 +53,7 @@ def test_cannot_roll_after_finished_returns_zero_and_no_change():
 
 
 def test_hold_banks_points_and_finishes_turn():
+    """Hold bank points and finish."""
     p = Player("Dan")
 
     class StubDice:
@@ -66,6 +70,7 @@ def test_hold_banks_points_and_finishes_turn():
 
 
 def test_second_hold_does_nothing_when_already_finished():
+    """Second hold does nothing."""
     p = Player("Eve")
 
     class StubDice:
