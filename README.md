@@ -110,3 +110,6 @@ move packages_pig-game.png doc\uml\package_diagram.png
 Invoke-Item doc\uml\class_diagram.png
 Invoke-Item doc\uml\package_diagram.png
 ```
+
+### In-game cheats
+Use the word "pepper" while playing to open the cheat menu

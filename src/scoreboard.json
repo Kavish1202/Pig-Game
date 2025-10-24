@@ -44,6 +44,15 @@
         "Kavish": 97,
         "Mava": 102
       }
+    },
+    {
+      "when": "2025-10-24T21:22:16",
+      "target": 100,
+      "winner": "Player 1",
+      "scores": {
+        "Player 1": 100,
+        "Player 2": 0
+      }
     }
   ]
 }

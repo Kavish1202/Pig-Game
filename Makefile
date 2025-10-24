@@ -71,7 +71,7 @@ init: install
 # Always run tests from the venv and add src to PYTHONPATH so imports work.
 test: install
 	$(PY) -m pip install -U pytest pytest-cov
-	set "PYTHONPATH=src" && $(PY) -m pytest -q tests
+	set "PYTHONPATH=src" && $(PY) -m pytest -q src/tests
 
 # ===== Coverage =====
 coverage: install
@@ -96,16 +96,6 @@ doc: install
 	powershell -Command "if (Test-Path doc\api\index.html) { Invoke-Item doc\api\index.html }"
 
 # ===== UML Diagrams =====
-# uml: install
-# 	$(PY) -m pip install -U pylint
-# 	$(PY) -m pylint.pyreverse.main -o png -p pig-game src/pig
-# 	@if exist classes_pig-game.png ( move /Y classes_pig-game.png doc\uml\class_diagram.png )
-# 	@if exist packages_pig-game.png ( move /Y packages_pig-game.png doc\uml\package_diagram.png )
-# 	powershell -Command "if (Test-Path doc\uml\class_diagram.png) { Invoke-Item doc\uml\class_diagram.png }"
-# 	powershell -Command "if (Test-Path doc\uml\package_diagram.png) { Invoke-Item doc\uml\package_diagram.png }"
-
-# ===== UML Diagrams (PNG via Kroki, no local installs) =====
-# ===== UML Diagrams (PNG via Kroki, stdlib only) =====
 uml: install
 	$(PY) -m pip install -U pylint
 	@echo Generating PlantUML sources with pyreverse...
