@@ -8,6 +8,7 @@ from time import sleep
 from pig.game import Game
 from pig.scoreboard import Scoreboard
 from pig.ai import ComputerStrategy, SmartStrategy
+from pig.cheat import Cheat
 
 
 SAVE_PATH = Path("scoreboard.json")
@@ -46,6 +47,10 @@ class PigShell(cmd.Cmd):
         self.mode = "pvp"
         self.difficulty = "normal"
         self.brain = None          
+        self._cheat = Cheat(self.game)   # stays dormant until armed
+        self._cheat_unlocked = False
+        self._cheat_word = "pepper"      # change this to whatever you like
+
         #self._print_header()
 
     def _print_header(self) -> None:
@@ -238,3 +243,67 @@ class PigShell(cmd.Cmd):
         """Ctrl+D/Ctrl+Z: Exit."""
         print()
         return self.do_quit(arg)
+
+    def default(self, line: str) -> bool:
+    # if user types the magic word, open the cheat menu
+        if line.strip().lower() == self._cheat_word:
+            self._cheat.arm()
+            self._cheat_unlocked = True
+            print("(dev) cheats unlocked.")
+            self._cheat_menu()
+            return False
+    # otherwise, just say we don't know that command
+        print(f"Unknown command: {line!r}. Type 'help' for a list of commands.")
+        return False
+    
+    def _cheat_menu(self) -> None:
+        if not self._cheat_unlocked:
+            print("nope.")
+            return
+
+        print("\ncheat menu — type 'back' to exit")
+        print("  next <vals...>     # force next rolls, e.g. 'next 6 6 2'")
+        print("  nobust on|off      # 1s count as 2 when on")
+        print("  add <p> <pts>      # add points to player 1/2")
+        print("  score <p> <n>      # set exact score for player 1/2")
+        print("  win [p]            # make player 1 (or 2) win now")
+        print("  clear              # clear all cheat knobs\n")
+
+        while True:
+            cmd = input("(cheat)> ").strip().lower()
+            if cmd in {"back", "exit", "quit"}:
+                print("leaving cheat menu.\n")
+                return
+            if not cmd:
+                continue
+
+            parts = cmd.split()
+            op = parts[0]
+            try:
+                if op == "next":
+                    for v in parts[1:]:
+                        self._cheat.force_next_roll(int(v))
+                    print("ok.")
+                elif op == "nobust":
+                    on = len(parts) > 1 and parts[1] == "on"
+                    self._cheat.no_bust_on_ones(on)
+                    print(f"nobust {'on' if on else 'off'}.")
+                elif op == "add":
+                    p, pts = int(parts[1]), int(parts[2])
+                    self._cheat.add_points(p, pts)
+                    print("ok.")
+                elif op == "score":
+                    p, n = int(parts[1]), int(parts[2])
+                    self._cheat.set_score(p, n)
+                    print("ok.")
+                elif op == "win":
+                    p = int(parts[1]) if len(parts) > 1 else 1
+                    self._cheat.win_now(p)
+                    print("ok.")
+                elif op == "clear":
+                    self._cheat.clear()
+                    print("cleared.")
+                else:
+                    print("huh?")
+            except Exception as e:
+                print(f"err: {e}")
