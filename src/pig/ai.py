@@ -2,7 +2,8 @@
 """Computer strategies for Pig."""
 
 from __future__ import annotations
-from pig.game import Game
+
+from .game import Game
 
 
 class ComputerStrategy:

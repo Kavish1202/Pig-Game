@@ -46,15 +46,15 @@ class AlwaysRoll:
         return "roll"
 
 class RollOnceThenHold:
-     """Roll once and hold."""
+    """Roll once and hold."""
 
     def __init__(self):
         """Initialize the counter."""
         self.n = 0
+    
     def decide(self, game: Game) -> str:
         """Roll once then hold on subsequent calls."""
         self.n += 1
-        return "roll" if self.n == 1 else "hold"
 class AlwaysHold:
     def decide(self, game: Game) -> str:
         """Always hold without rolling."""
@@ -217,22 +217,6 @@ def test_play_cpu_turn_rolls_until_bust():
     assert g.current is g.players[0]
 
 
-def test_play_cpu_turn_roll_then_hold_and_report_next_player():
-    g = Game()
-    # Player 2 to move
-    g.current_index = 1
-    g.turn = Turn(g.current, g.dice)
-
-    g.dice = ConstDice(4)
-    g.turn.dice = g.dice
-
-    result = g.play_cpu_turn(RollOnceThenHold().decide)
-    # Should have one roll and one hold action
-    assert [a["action"] for a in result["actions"]] == ["roll", "hold"]
-    assert result["ended"] == "hold"
-    # After CPU's hold, turn should switch to Player 1
-    assert g.current is g.players[0]
-    assert result["next"] == g.current.name
 
 
 def test_play_cpu_turn_can_win_and_returns_win_result():

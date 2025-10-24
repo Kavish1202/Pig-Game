@@ -30,13 +30,14 @@ doc:
 
 # ===== UML Diagrams =====
 uml:
-	@if not exist doc\\uml mkdir doc\\uml
-	.venv\\Scripts\\python -m pyreverse src -o png -p PigGame
-	@move /Y classes_PigGame.png doc\\uml\\ >NUL 2>&1
-	@move /Y packages_PigGame.png doc\\uml\\ >NUL 2>&1
+	pyreverse -o png -p pig-game src/pig
+	move classes_pig-game.png doc\uml\class_diagram.png
+	move packages_pig-game.png doc\uml\package_diagram.png
 
 # ===== Cleanup =====
 clean:
 	powershell -Command "Remove-Item -Recurse -Force -ErrorAction SilentlyContinue __pycache__, .pytest_cache, htmlcov, .coverage, doc\\api, doc\\uml"
 
 .PHONY: venv install init test coverage lint format doc uml clean
+
+

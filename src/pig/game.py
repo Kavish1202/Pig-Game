@@ -181,5 +181,5 @@ class Game:
                         "winner": player_name_before,
                         "actions": actions
                     }
-                return {"ended": "hold", "next": self.current.name,
+                return {"ended": "hold", "next": self.current.name, 
                         "actions": actions}
