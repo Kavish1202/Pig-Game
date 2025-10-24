@@ -1,0 +1,119 @@
+@startuml classes_pig
+set namespaceSeparator none
+class "Cheat" as pig.cheat.Cheat {
+  active : bool
+  game
+  add_points(player_no: int, pts: int) -> None
+  arm() -> None
+  bias(chooser: Callable[[], int]) -> None
+  clear() -> None
+  force_next_roll(value: int) -> None
+  force_next_rolls() -> None
+  no_bust_on_ones(on: bool) -> None
+  set_score(player_no: int, score: int) -> None
+  uninstall() -> None
+  win_now(player_no: int) -> None
+}
+class "ComputerStrategy" as pig.ai.ComputerStrategy {
+  base_threshold : int
+  decide(game: Game) -> str
+}
+class "Dice" as pig.dice.Dice {
+  sides : int
+  roll() -> int
+}
+class "Game" as pig.game.Game {
+  current : Player
+  current_index : int
+  dice
+  is_over : bool
+  opponent : Player
+  players : list[Player]
+  target : int
+  turn : Turn | None
+  turn_points : int
+  winner_id : str | None
+  get_winner() -> Player | None
+  hold() -> None
+  play_cpu_turn(decide) -> dict
+  rename(player_no: int, new_name: str) -> None
+  reset() -> None
+  roll() -> int
+  set_target(new_target: int) -> None
+  snapshot() -> dict
+}
+class "PigShell" as pig.shell.PigShell {
+  brain : NoneType
+  difficulty : str
+  game
+  intro : str
+  mode : str
+  prompt : str
+  sb
+  default(line: str) -> bool
+  do_EOF(arg)
+  do_diff(arg)
+  do_hold(arg)
+  do_mode(arg)
+  do_name(arg)
+  do_quit(arg)
+  do_reset(arg)
+  do_roll(arg)
+  do_save(arg)
+  do_status(arg)
+  do_target(arg)
+  do_view(arg)
+  postcmd(stop: bool, line: str) -> bool
+  preloop()
+}
+class "Player" as pig.player.Player {
+  name : str
+  player_id : str
+  score : int
+  add_score(points: int) -> None
+  change_name(new_name: str) -> None
+  reset_score() -> None
+  to_dict() -> dict[str, str | int]
+}
+class "ScoreRow" as pig.scoreboard.ScoreRow {
+  scores : dict[str, int]
+  target : int
+  when : str
+  winner : str
+}
+class "Scoreboard" as pig.scoreboard.Scoreboard {
+  history : list[ScoreRow]
+  from_dict(data: dict) -> 'Scoreboard'
+  last(n: int) -> list[ScoreRow]
+  record() -> None
+  record_from_game(game: Game) -> None
+  reset() -> None
+  to_dict() -> dict
+  top(n: int) -> list[tuple[str, int]]
+  wins_table() -> dict[str, int]
+}
+class "SmartStrategy" as pig.ai.SmartStrategy {
+  max_threshold : int
+  min_threshold : int
+  decide(game: Game) -> str
+}
+class "Turn" as pig.turn.Turn {
+  busted : bool
+  dice
+  finished : bool
+  player
+  points : int
+  hold() -> None
+  reset() -> None
+  roll() -> int
+}
+pig.game.Game --> pig.dice.Dice : dice
+pig.turn.Turn --> pig.dice.Dice : dice
+pig.scoreboard.Scoreboard --> pig.scoreboard.ScoreRow : history
+pig.ai.ComputerStrategy --* pig.shell.PigShell : brain
+pig.ai.SmartStrategy --* pig.shell.PigShell : brain
+pig.game.Game --o pig.cheat.Cheat : game
+pig.game.Game --o pig.shell.PigShell : game
+pig.player.Player --o pig.turn.Turn : player
+pig.scoreboard.Scoreboard --o pig.shell.PigShell : sb
+@enduml

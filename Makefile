@@ -96,14 +96,30 @@ doc: install
 	powershell -Command "if (Test-Path doc\api\index.html) { Invoke-Item doc\api\index.html }"
 
 # ===== UML Diagrams =====
+# uml: install
+# 	$(PY) -m pip install -U pylint
+# 	$(PY) -m pylint.pyreverse.main -o png -p pig-game src/pig
+# 	@if exist classes_pig-game.png ( move /Y classes_pig-game.png doc\uml\class_diagram.png )
+# 	@if exist packages_pig-game.png ( move /Y packages_pig-game.png doc\uml\package_diagram.png )
+# 	powershell -Command "if (Test-Path doc\uml\class_diagram.png) { Invoke-Item doc\uml\class_diagram.png }"
+# 	powershell -Command "if (Test-Path doc\uml\package_diagram.png) { Invoke-Item doc\uml\package_diagram.png }"
+
+# ===== UML Diagrams (PNG via Kroki, no local installs) =====
+# ===== UML Diagrams (PNG via Kroki, stdlib only) =====
 uml: install
 	$(PY) -m pip install -U pylint
-	$(PY) -m pylint.pyreverse.main -o png -p pig-game src/pig
-	@if exist classes_pig-game.png ( move /Y classes_pig-game.png doc\uml\class_diagram.png )
-	@if exist packages_pig-game.png ( move /Y packages_pig-game.png doc\uml\package_diagram.png )
-	powershell -Command "if (Test-Path doc\uml\class_diagram.png) { Invoke-Item doc\uml\class_diagram.png }"
-	powershell -Command "if (Test-Path doc\uml\package_diagram.png) { Invoke-Item doc\uml\package_diagram.png }"
-
+	@echo Generating PlantUML sources with pyreverse...
+	$(PY) -m pylint.pyreverse.main -o plantuml -p pig src\pig
+	@if not exist doc\uml mkdir doc\uml
+	@echo Rendering class diagram via Kroki...
+	"$(PY)" tools\kroki_render.py classes_pig.plantuml doc\uml\class_diagram.png plantuml
+	@echo Rendering package diagram via Kroki (if present)...
+	@if exist packages_pig.plantuml "$(PY)" tools\kroki_render.py packages_pig.plantuml doc\uml\package_diagram.png plantuml
+	@if not exist packages_pig.plantuml echo Skipping package diagram (not generated).
+	@if exist classes_pig.plantuml  move /Y classes_pig.plantuml  doc\uml\classes.puml
+	@if exist packages_pig.plantuml move /Y packages_pig.plantuml doc\uml\packages.puml
+	@echo PNGs written to: doc\uml\class_diagram.png  and (if available) doc\uml\package_diagram.png
+	@powershell -Command "if (Test-Path 'doc/uml/class_diagram.png') { Invoke-Item 'doc/uml/class_diagram.png' }"
 
 # ===== Cleanup =====
 clean:
