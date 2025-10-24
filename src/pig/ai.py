@@ -1,4 +1,3 @@
-# pig/ai.py
 """Computer strategies for Pig."""
 
 from __future__ import annotations

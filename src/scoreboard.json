@@ -37,12 +37,12 @@
       }
     },
     {
-      "when": "2025-10-24T19:17:12",
+      "when": "2025-10-24T01:52:02",
       "target": 100,
-      "winner": "Player 1",
+      "winner": "Mava",
       "scores": {
-        "Player 1": 100,
-        "Player 2": 0
+        "Kavish": 97,
+        "Mava": 102
       }
     }
   ]
