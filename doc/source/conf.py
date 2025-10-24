@@ -1,20 +1,21 @@
+# -- Project information -----------------------------------------------------
 project = 'Pig Game'
 copyright = '2025'
-author = 'Your Name'
+author = 'Shahzaib Khan'
 release = '1.0'
 
-# Extensions (Napoleon is built-in, so use 'sphinx.ext.napoleon')
+# -- General configuration ---------------------------------------------------
 extensions = [
-    'sphinx.ext.autodoc',      # Auto-generate from docstrings
-    'sphinx.ext.napoleon',     # Built-in support for Google/NumPy docstrings
-    'sphinx.ext.viewcode'      # Show source code links
+    'sphinx.ext.autodoc',     # Generate docs from docstrings
+    'sphinx.ext.napoleon',    # Support for Google/NumPy docstrings
+    'sphinx.ext.viewcode'     # Add “View Source” links
 ]
 
-# Add your source path (adjust if needed)
+# Add your src path so autodoc can import your code
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../../src'))
 
-# HTML theme and static files
+# -- Options for HTML output -------------------------------------------------
 html_theme = 'alabaster'
 html_static_path = ['_static']
