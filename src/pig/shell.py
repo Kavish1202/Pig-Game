@@ -96,7 +96,7 @@ class PigShell(cmd.Cmd):
         result = self.game.play_cpu_turn(self.brain.decide)
         for step in result.get("actions", []):
             if step["action"] == "roll":
-                print(f"CPU rolled {step['value']}")
+                print(f"{self.game.players[1].name} rolled {step['value']}")
                 if step["value"] == 1:
                     print("CPU busted.")
                     print(f"{self.game.current.name}'s turn.")
@@ -154,10 +154,16 @@ class PigShell(cmd.Cmd):
         """roll: Roll the dice for the current player."""
         v = self.game.roll()
         if v == 1:
-            print("Rolled 1. BUST.")
+            print("Rolled 1.")
+            sleep(0.25)
+            print("BUSTED! No points this turn.")
+            sleep(0.25)
             print("Score this round: 0 points.")
+            sleep(0.25)
             print(f"Total score: {self.game.current.score} points.")
+            sleep(0.25)
             print(f"{self.game.current.name}'s turn.")
+            sleep(0.25)
         else:
             print(f"Rolled {v}. Turn points: {self.game.turn_points}")
 
@@ -166,7 +172,9 @@ class PigShell(cmd.Cmd):
         self.game.hold()
         if not self.game.is_over:
             print(f"Holding. Current Score: {self.game.opponent.score} points.")
+            sleep(0.25)
             print(f"{self.game.current.name}'s turn.")
+            sleep(0.25)
 
     def do_status(self, arg):
         """status: Show scores and whose turn it is."""
