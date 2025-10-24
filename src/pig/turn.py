@@ -13,6 +13,14 @@ class Turn:
     """
 
     def __init__(self, player: Player, dice: Dice | None = None) -> None:
+        """
+        Initialize a new turn for a player.
+
+        Args:
+            player: The player taking this turn.
+            dice: Optional dice object to use.
+                Creates a new one if not provided.
+        """
         self.player = player
         self.dice = dice or Dice()
         self.points = 0
@@ -22,6 +30,7 @@ class Turn:
     def roll(self) -> int:
         """
         Roll the dice once.
+
         If it's a 1, the turn ends and all points are lost.
         Otherwise, the roll value is added to this turn's total.
         """
@@ -40,6 +49,7 @@ class Turn:
     def hold(self) -> None:
         """
         End the turn and add the turn points to the player's score.
+
         Does nothing if the turn has already ended.
         """
         if self.finished:
@@ -55,5 +65,9 @@ class Turn:
 
     def __str__(self) -> str:
         """Quick string view for printing or debugging."""
-        state = "busted" if self.busted else "active" if not self.finished else "done"
+        state = (
+            "busted" if self.busted
+            else "active" if not self.finished
+            else "done"
+        )
         return f"Turn({self.player.name}: {self.points} pts, {state})"

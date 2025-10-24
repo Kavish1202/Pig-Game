@@ -14,6 +14,7 @@ SAVE_PATH = Path("scoreboard.json")
 
 
 def load_scoreboard() -> Scoreboard:
+    """Load scoreboard."""
     if SAVE_PATH.exists():
         try:
             data = json.loads(SAVE_PATH.read_text(encoding="utf-8"))
@@ -24,6 +25,7 @@ def load_scoreboard() -> Scoreboard:
 
 
 def save_scoreboard(sb: Scoreboard) -> None:
+    """Save the scoreboard to disk."""
     SAVE_PATH.write_text(json.dumps(sb.to_dict(), indent=2), encoding="utf-8")
 
 
@@ -36,15 +38,18 @@ def _build_brain(difficulty: str):
 
 
 class PigShell(cmd.Cmd):
+    """Command-line shell for playing Pig."""
+
     intro = "Pig — type 'help' for commands. Start with 'status' or 'roll'."
     prompt = "> "
 
     def __init__(self, game: Game, sb: Scoreboard) -> None:
+        """Initialize the PigShell with a game and scoreboard."""
         super().__init__()
         self.game = game
         self.sb = sb
         self.mode = "pvp"          # 'pvp' or 'pvc'
-        self.difficulty = "normal" # 'easy' | 'normal' | 'hard'
+        self.difficulty = "normal"   # 'easy' | 'normal' | 'hard'
         self.brain = None          # set when mode is pvc
         self._print_header()
 
@@ -56,7 +61,10 @@ class PigShell(cmd.Cmd):
         print(f"Pig — first to {g.target} wins")
         print("-" * 42)
         p1, p2 = g.players
-        print(f"{p1.name:>12}: {p1.score:>3}   vs   {p2.name:<12}: {p2.score:>3}")
+        print(
+            f"{p1.name:>12}: {p1.score:>3}   vs   "
+            f"{p2.name:<12}: {p2.score:>3}"
+        )
         print("-" * 42)
         self._print_turn()
 
@@ -110,7 +118,9 @@ class PigShell(cmd.Cmd):
             return
         print("Recent results:")
         for r in rows:
-            line = ", ".join(f"{name}: {pts}" for name, pts in r.scores.items())
+            line = ", ".join(
+                f"{name}: {pts}" for name, pts in r.scores.items()
+            )
             print(f"[{r.when}] to {r.target} — winner: {r.winner} — {line}")
         print()
 
@@ -125,24 +135,32 @@ class PigShell(cmd.Cmd):
 
         if self.mode == "pvc":
             while True:
-                d = input("Difficulty? [1] Easy  [2] Normal  [3] Hard: ").strip()
+                d = input(
+                    "Difficulty? [1] Easy  [2] Normal  [3] Hard: "
+                ).strip()
                 if d in {"1", "2", "3"}:
                     break
-                print("Choose 1, 2, or 3.")
-            self.difficulty = {"1": "easy", "2": "normal", "3": "hard"}[d]
             self.brain = _build_brain(self.difficulty)
             self._ensure_cpu_name()
 
-        print(f"Mode set to {self.mode}" + (f" ({self.difficulty})" if self.mode == "pvc" else ""))
+        print(
+            f"Mode set to {self.mode}"
+            + (f" ({self.difficulty})" if self.mode == "pvc" else "")
+        )
+
+    # ----- cmd hooks ---------------------------------------------------
 
     # ----- cmd hooks ---------------------------------------------------
 
     def preloop(self):
+        """Set mode and print header before the command loop starts."""
         self._prompt_mode_and_diff()
         self._print_header()
 
     def postcmd(self, stop: bool, line: str) -> bool:
-        # After every command, check winner, then let CPU act if it's their turn.
+        """Run after each command to handle win checks and CPU turns."""
+        # After each command, check winner,
+        # then let CPU act if it's their turn.
         self._maybe_record_winner()
         self._cpu_take_turn()
         self._maybe_record_winner()
@@ -165,7 +183,10 @@ class PigShell(cmd.Cmd):
         """hold: Bank current turn points."""
         self.game.hold()
         if not self.game.is_over:
-            print(f"Holding. Current Score: {self.game.opponent.score} points.")
+            print(
+                "Holding. Current Score: "
+                f"{self.game.opponent.score} points."
+            )
             print(f"{self.game.current.name}'s turn.")
 
     def do_status(self, arg):
@@ -173,7 +194,7 @@ class PigShell(cmd.Cmd):
         self._print_header()
 
     def do_name(self, arg):
-        """name <1|2> <new name>: Rename a player."""
+        """Name <1|2> <new name>: Rename a player."""
         try:
             idx_str, *rest = arg.split()
             if idx_str not in ("1", "2") or not rest:
@@ -186,7 +207,7 @@ class PigShell(cmd.Cmd):
             print(f"Name change failed: {e}")
 
     def do_target(self, arg):
-        """target <points>: Set new target score (>= 1)."""
+        """Target <points>: Set new target score (>= 1)."""
         try:
             self.game.set_target(int(arg.strip()))
             print(f"Target set to {self.game.target}.")
@@ -194,7 +215,7 @@ class PigShell(cmd.Cmd):
             print(f"Could not set target: {e}")
 
     def do_reset(self, arg):
-        """reset [keep|clear]: Reset the game. Keep names by default."""
+        """Reset [keep|clear]: Reset the game. Keep names by default."""
         keep = (arg.strip().lower() != "clear")
         self.game.reset(keep_names=keep)
         self._ensure_cpu_name()
@@ -212,18 +233,21 @@ class PigShell(cmd.Cmd):
     # ----- mode / difficulty ------------------------------------------
 
     def do_mode(self, arg):
-        """mode <pvp|pvc>: Switch between two humans or vs computer."""
+        """Mode <pvp|pvc>: Switch between two humans or vs computer."""
         val = arg.strip().lower()
         if val not in {"pvp", "pvc"}:
             print("Pick 'pvp' or 'pvc'.")
             return
         self.mode = val
-        self.brain = _build_brain(self.difficulty) if self.mode == "pvc" else None
+        if self.mode == "pvc":
+            self.brain = _build_brain(self.difficulty)
+        else:
+            self.brain = None
         self._ensure_cpu_name()
         self._print_header()
 
     def do_diff(self, arg):
-        """diff <easy|normal|hard>: Set computer difficulty (PvC only)."""
+        """Diff <easy|normal|hard>: Set computer difficulty (PvC only)."""
         val = arg.strip().lower()
         if val not in {"easy", "normal", "hard"}:
             print("Pick 'easy', 'normal' or 'hard'.")
