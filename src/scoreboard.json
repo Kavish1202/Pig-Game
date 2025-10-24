@@ -35,6 +35,15 @@
         "Player 1": 76,
         "Computer": 104
       }
+    },
+    {
+      "when": "2025-10-24T01:52:02",
+      "target": 100,
+      "winner": "Mava",
+      "scores": {
+        "Kavish": 97,
+        "Mava": 102
+      }
     }
   ]
 }

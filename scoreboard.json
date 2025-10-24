@@ -1,0 +1,31 @@
+{
+  "history": [
+    {
+      "when": "2025-10-24T02:01:24",
+      "target": 100,
+      "winner": "Player 1",
+      "scores": {
+        "Player 1": 100,
+        "Player 2": 0
+      }
+    },
+    {
+      "when": "2025-10-24T02:13:13",
+      "target": 100,
+      "winner": "Player 1",
+      "scores": {
+        "Player 1": 100,
+        "Player 2": 0
+      }
+    },
+    {
+      "when": "2025-10-24T02:14:01",
+      "target": 100,
+      "winner": "Player 2",
+      "scores": {
+        "Player 1": 0,
+        "Player 2": 100
+      }
+    }
+  ]
+}
