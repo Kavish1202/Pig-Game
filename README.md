@@ -2,6 +2,13 @@
 
 A Pig Game implementation in Python, developed using Object-Oriented Programming principles with comprehensive unit testing.
 
+### Playing the Game
+1- Go to Pig-game/src directory
+2- In cmd 
+```bash
+python main.py
+```
+
 ## Running Tests and Coverage Report
 
 This section provides instructions for running the test suite and generating a test coverage report for the Pig Game project on Windows.
