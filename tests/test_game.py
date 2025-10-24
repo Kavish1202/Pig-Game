@@ -8,28 +8,57 @@ from pig.player import Player
 # ---------- helpers ----------
 
 class OneDice:
-    def roll(self): return 1
+    """A dice class that always rolls a value of 1."""
+
+    def roll(self):
+        """Return a constant dice roll value of 1."""
+        return 1
+
 
 class ConstDice:
-    def __init__(self, v): self.v = v
-    def roll(self): return self.v
+    """A dice class that always returns a constant value."""
+
+    def __init__(self, v):
+        """Initialize ConstDice with a constant value v."""
+        self.v = v
+
+    def roll(self):
+        """Return the constant dice roll value."""
+        return self.v
+
 
 class SeqDice:
-    def __init__(self, seq): self.seq = list(seq)
-    def roll(self): return self.seq.pop(0)
+    """A dice class that returns values from a sequence, one at a time."""
+
+    def __init__(self, seq):
+        """Initialize SeqDice with a sequence of values."""
+        self.seq = list(seq)
+
+    def roll(self):
+        """Return the next value in the sequence."""
+        return self.seq.pop(0)
 
 class AlwaysRoll:
+    """Always roll."""
+
     def decide(self, game: Game) -> str:
+        """Decide."""
         return "roll"
 
 class RollOnceThenHold:
-    def __init__(self): self.n = 0
+     """Roll once and hold."""
+
+    def __init__(self):
+        """Initialize the counter."""
+        self.n = 0
     def decide(self, game: Game) -> str:
+        """Roll once then hold on subsequent calls."""
         self.n += 1
         return "roll" if self.n == 1 else "hold"
-
 class AlwaysHold:
     def decide(self, game: Game) -> str:
+        """Always hold without rolling."""
+        return "hold"
         return "hold"
 
 
@@ -207,6 +236,7 @@ def test_play_cpu_turn_roll_then_hold_and_report_next_player():
 
 
 def test_play_cpu_turn_can_win_and_returns_win_result():
+
     g = Game(target=10)
     # ensure Player 1 is to play and wins by holding
     g.current_index = 0
