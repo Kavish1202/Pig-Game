@@ -160,7 +160,7 @@ class PigShell(cmd.Cmd):
             sleep(0.25)
             print("Score this round: 0 points.")
             sleep(0.25)
-            print(f"Total score: {self.game.current.score} points.")
+            print(f"Total score: {self.game.opponent.score} points.")
             sleep(0.25)
             print(f"{self.game.current.name}'s turn.")
             sleep(0.25)
